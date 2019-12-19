@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<center><title>Foothills Landscape Maintenance Snow Removal</title></center>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="css/style.css" type="text/css">
+
+</head>
+<body>
+
+	<h1>FLM Snow</h1>
+	<center><p>Please fill out this form completely.</p></center>
+
+
+  
+  <fieldset>
+    <label>Property Name</label>
+	<select id = "mylist">
+		<option value = "1">Aberdeen</option>
+		<option value = "2">1801 S College</option>
+		<option value = "3">Mijoy Properties</option>
+		<option value = "4">Conifer Meadows</option>
+		<option value = "5">Waterglen</option>
+		<option value = "6">Oakbrook 1 Manor</option>
+		<option value = "7">Town Homes on Vine</option>
+		<option value = "8">1801 S College</option>
+		<option value = "9">Peach Tree</option>
+		<option value = "10">Courtyards at Paragon</option>
+		<option value = "11">Paragon Point</option>
+		<option value = "12">Oakridge Village</option>
+		</select>
+		
+	<p id="GPS Coordinates"></p>
+	<script>
+		var x = document.getElementById("GPS Coordinates");
+		function getLocation() {
+		if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(showPosition);
+		} else {
+		x.innerHTML = "Geolocation is not supported by this browser.";
+		}
+		}
+		function showPosition(position) {
+		x.innerHTML = "Latitude: " + position.coords.latitude +
+		"<br>Longitude: " + position.coords.longitude;
+		}
+	</script>
+	<center><button onclick="getLocation()">Proof of Location</button></center>
+	
+	<p id="Google Map"></p>
+	<iframe id="myFrame" src="" width="270" height="270" frameborder="0" style="border:0"></iframe>
+	<script>
+		var x = document.getElementById("Google Map");
+		function getLocation() {
+		if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(showPosition);
+		} else { 
+		x.innerHTML = "Geolocation is not supported by this browser.";
+		}
+		}
+		function showPosition(position) {
+		x.innerHTML = "Latitude: " + position.coords.latitude + 
+		"<br>Longitude: " + position.coords.longitude;
+		document.getElementById("myFrame").src = 'http://maps.google.com/maps?q='+position.coords.latitude+', '+position.coords.longitude+'&z=15&output=embed';
+		}
+	</script>
+	
+  </fieldset>
+
+
+  <fieldset>
+	  <label>Date: </Label><input type="date"/><br>
+  </fieldset>
+
+
+  <fieldset>	
+	<label>Sub Contractor Name:</label><input type="text" name="firstname"><br>
+  </fieldset>
+
+
+  <Fieldset>
+  		First & Last Name of all Employees on site:<br><input type="text" name="firstname"><br>
+		<br><input type="text" name="firstname"><br>
+		<br><input type="text" name="firstname"><br>
+		<br><input type="text" name="firstname"><br>
+		<br><input type="text" name="firstname"><br>
+		<br><input type="text" name="firstname"><br>
+		<br><input type="text" name="firstname"><br>
+		<br><input type="text" name="firstname"><br>
+		<br><input type="text" name="firstname"><br>
+		<br><input type="text" name="firstname"><br>
+  </Fieldset>
+
+
+  <fieldset>
+		<p> Snow depth on property when beginning snow operations:</p>
+	  <br><p>
+             <label>Inches</label>
+             <select id = "myList">
+               <option value = "1">One</option>
+               <option value = "2">Two</option>
+               <option value = "3">Three</option>
+               <option value = "4">Four</option>
+			   <option value = "5">Five</option>
+               <option value = "6">Six</option>
+               <option value = "7">Seven+</option>
+             </select>
+          </p><br>
+		  Location of measurement:<input type="text" name="firstname"><br>
+		  <br>
+		  <br>
+		  Please check the box if this is one of the following:  
+		  <br><input type="checkbox" name="Return Visit" value="Call Back">Call Back<br>
+			  <input type="checkbox" name="Return Visit" value="Complaint">Complaint<br> 
+			  <input type="checkbox" name="Return Visit" value="Post Storm">Post Storm Inspection<br>
+  </Fieldset>
+	
+		
+  <Fieldset>
+	<br>Equipment Used:	
+	<br><input type="checkbox" name="equipment" value="Plow">Truck w/Attached Plow <input size="1" type="number" name="someid" />Man Hours<br> 
+	<input type="checkbox" name="equipment" value="Walker">ATV/Walker (w/Blade or Blower)<input size="1" type="number" name="someid" />Man Hours<br> 
+	<input type="checkbox" name="equipment" value="Blower">Snow Blower (Walk Behind)<input size="1" type="number" name="someid" />Man Hours<br>
+	<input type="checkbox" name="equipment" value="Hand Shovel">Hand Shovel<input size="1" type="number" name="someid" />Man Hours<br>
+	<input type="checkbox" name="equipment" value="Skid Bucket">Skid Steer w/Bucket<input size="1" type="number" name="someid" />Man Hours<br>
+	<input type="checkbox" name="equipment" value="Skid Box">Skid/Tractor w/Pusher Box<input size="1" type="number" name="someid" />Man Hours<br>
+	<input type="checkbox" name="equipment" value="Loader Bucket">Front End Loader w/Bucket<input size="1" type="number" name="someid" />Man Hours<br>
+	<input type="checkbox" name="equipment" value="Loader Box">Front End Loader w/Pusher Box<input size="1" type="number" name="someid" />Man Hours<br>
+  </Fieldset>
+
+  <Fieldset>
+	<p>Weather conditions upon leaving the property:<input type="text" name="firstname"><br>
+	Please notate any area of concern on property:<input type="text" name="firstname"><br></p>
+  </fieldset>
+
+ 
+  <fieldset>
+    <label>Time</label>
+	<p>Date/Time: <span id="datetime"></span></p>
+		<script>
+		var dt = new Date();
+		document.getElementById("datetime").innerHTML = dt.toLocaleString();
+		</script>
+		</p>
+  </fieldset>
+
+
+
+
+
+
+</body>
+</html>
