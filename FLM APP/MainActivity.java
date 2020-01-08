@@ -1,207 +1,91 @@
-private boolean checkMapServices(){
+private void askForPermission(String permission, Integer requestCode) {
+    if (ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
 
-        if(isServicesOK()){
+        // Should we show an explanation?
+        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, permission)) {
 
-            if(isMapsEnabled()){
-
-                return true;
-
-            }
-
-        }
-
-        return false;
-
-    }
-
-
-
-    private void buildAlertMessageNoGps() {
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
-
-                .setCancelable(false)
-
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-
-                        Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-
-                        startActivityForResult(enableGpsIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
-
-                    }
-
-                });
-
-        final AlertDialog alert = builder.create();
-
-        alert.show();
-
-    }
-
-
-
-    public boolean isMapsEnabled(){
-
-        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
-
-
-
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-
-            buildAlertMessageNoGps();
-
-            return false;
-
-        }
-
-        return true;
-
-    }
-
-
-
-    private void getLocationPermission() {
-
-        /*
-
-         * Request location permission, so that we can get the location of the
-
-         * device. The result of the permission request is handled by a callback,
-
-         * onRequestPermissionsResult.
-
-         */
-
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-
-                == PackageManager.PERMISSION_GRANTED) {
-
-            mLocationPermissionGranted = true;
-
-            getChatrooms();
+            //This is called if user has denied the permission before
+            //In this case I am just asking the permission again
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission}, requestCode);
 
         } else {
 
-            ActivityCompat.requestPermissions(this,
-
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission}, requestCode);
         }
-
+    } else {
+        Toast.makeText(this, "" + permission + " is already granted.", Toast.LENGTH_SHORT).show();
     }
+}
 
-
-
-    public boolean isServicesOK(){
-
-        Log.d(TAG, "isServicesOK: checking google services version");
-
-
-
-        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
-
-
-
-        if(available == ConnectionResult.SUCCESS){
-
-            //everything is fine and the user can make map requests
-
-            Log.d(TAG, "isServicesOK: Google Play Services is working");
-
-            return true;
-
-        }
-
-        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
-
-            //an error occured but we can resolve it
-
-            Log.d(TAG, "isServicesOK: an error occured but we can fix it");
-
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, ERROR_DIALOG_REQUEST);
-
-            dialog.show();
-
-        }else{
-
-            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
-
-        }
-
-        return false;
-
+public void ask(View v){
+    switch (v.getId()){
+        case R.id.location:
+            askForPermission(Manifest.permission.ACCESS_FINE_LOCATION,LOCATION);
+            break;
+        case R.id.call:
+            askForPermission(Manifest.permission.CALL_PHONE,CALL);
+            break;
+        case R.id.write:
+            askForPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,WRITE_EXST);
+            break;
+        case R.id.read:
+            askForPermission(Manifest.permission.READ_EXTERNAL_STORAGE,READ_EXST);
+            break;
+        case R.id.camera:
+            askForPermission(Manifest.permission.CAMERA,CAMERA);
+            break;
+        case R.id.accounts:
+            askForPermission(Manifest.permission.GET_ACCOUNTS,ACCOUNTS);
+            break;
+        default:
+            break;
     }
+}
 
-
-
-    @Override
-
-    public void onRequestPermissionsResult(int requestCode,
-
-                                           @NonNull String permissions[],
-
-                                           @NonNull int[] grantResults) {
-
-        mLocationPermissionGranted = false;
-
+@Override
+public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    if(ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_GRANTED){
         switch (requestCode) {
-
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-
-                // If request is cancelled, the result arrays are empty.
-
-                if (grantResults.length > 0
-
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    mLocationPermissionGranted = true;
-
+            //Location
+            case 1:
+                askForGPS();
+                break;
+            //Call
+            case 2:
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + "{This is a telephone number}"));
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    startActivity(callIntent);
                 }
-
-            }
-
+                break;
+            //Write external Storage
+            case 3:
+                break;
+            //Read External Storage
+            case 4:
+                Intent imageIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(imageIntent, 11);
+                break;
+            //Camera
+            case 5:
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, 12);
+                }
+                break;
+            //Accounts
+            case 6:
+                AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+                Account[] list = manager.getAccounts();
+                Toast.makeText(this,""+list[0].name,Toast.LENGTH_SHORT).show();
+                for(int i=0; i<list.length;i++){
+                    Log.e("Account "+i,""+list[i].name);
+                }
         }
 
+        Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+    }else{
+        Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
     }
-
-
-
-    @Override
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Log.d(TAG, "onActivityResult: called.");
-
-        switch (requestCode) {
-
-            case PERMISSIONS_REQUEST_ENABLE_GPS: {
-
-                if(mLocationPermissionGranted){
-
-                    getChatrooms();
-
-                }
-
-                else{
-
-                    getLocationPermission();
-
-                }
-
-            }
-
-        }
-
-
-
-    }
+}
